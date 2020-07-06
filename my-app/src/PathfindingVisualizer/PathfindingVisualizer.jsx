@@ -17,13 +17,13 @@ export default class PathfindingVisualizer extends Component {
     constructor() {
         super();
         this.state = {
-            // 2 variables for the grid and if the mouse is clicked
+            // 2 variables for the grid and if the mouse is clicked for every instance of the visualizer
             grid: [],
             mouseIsPressed: false,
         };
     }
 
-    //
+    //Builds a grid
     componentDidMount() {
         const grid = getInitialGrid();
         this.setState({grid});
@@ -81,7 +81,7 @@ export default class PathfindingVisualizer extends Component {
         this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
-    //Renders the app
+    //Renders the app and its elements (what's in the return statement)
     render() {
         const {grid, mouseIsPressed} = this.state;
         return (

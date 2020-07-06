@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './Node.css';
 
-//Main class
+//Main class to create nodes
 export default class Node extends Component {
     //Sends data to app
     render() {
@@ -17,7 +17,7 @@ export default class Node extends Component {
             row,
         } = this.props;
 
-        //Not sure yet
+        // Ternary operator, basically if statement. It's isFinish only if it is 'node-finish
         const extraClassName = isFinish
         ? 'node-finish'
         : isStart
