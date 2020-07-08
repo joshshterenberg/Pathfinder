@@ -48,7 +48,7 @@ export default class PathfindingVisualizer extends Component {
     }
 
     //Animates the dijkstra algorithm with the blue squares
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    animate(visitedNodesInOrder, nodesInShortestPathOrder) {
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             if (i === visitedNodesInOrder.length) {
                 setTimeout(() => {this.animateShortestPath(nodesInShortestPathOrder);}, 10 * i);
@@ -78,7 +78,7 @@ export default class PathfindingVisualizer extends Component {
         const finishNode = grid[FINISH_ROW][FINISH_COL];
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        this.animate(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
     visualizeBreadthFirstSearch() {
