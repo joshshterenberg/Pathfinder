@@ -10,7 +10,7 @@ const START_COL = 15;
 const FINISH_ROW = 10;
 const FINISH_COL = 35;
 
-//Main class
+//Main component that we are exporting to the app has basically 3 tings: construct, methods, and render.
 export default class PathfindingVisualizer extends Component {
 
     //Constructor
@@ -81,6 +81,12 @@ export default class PathfindingVisualizer extends Component {
         this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
+    visualizeBreadthFirstSearch() {
+        const {grid} = this.state;
+        const startNode = grid[START_ROW][START_COL];
+        const finishNode = grid[FINISH_ROW][FINISH_COL];
+    }
+
     //Renders the app and its elements (what's in the return statement)
     render() {
         const {grid, mouseIsPressed} = this.state;
@@ -88,6 +94,9 @@ export default class PathfindingVisualizer extends Component {
             <>
             <button onClick={() => this.visualizeDijkstra()}>
                 Visualize Dijkstra's Algorithm
+            </button>
+            <button onClick={() => this.visualizeBreadthFirstSearch()}>
+                Visualize Breadth First Search Algorithm
             </button>
             <div className="grid">
                 {grid.map((row, rowIdx) => {
@@ -118,7 +127,7 @@ export default class PathfindingVisualizer extends Component {
         );
     }
 }
-
+//External functions that do stuff with individual nodes?
 //Get the initial conditions of the grid
 const getInitialGrid = () => {
     const grid = [];
