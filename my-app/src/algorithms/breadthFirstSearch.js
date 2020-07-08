@@ -1,57 +1,55 @@
 // Performs Breadth First Search Algorithm
-// Uses a FIFO queue:
-//      Starts with nothing in queue, step 1: dequeue, step 2: requeue
-// With pathfinding, we have 4 options, so...
-// q = ''
-// loop:
-//      get the first element from the queue (store in x), remove it from queue
-//      for each "u", "l", ...
-//          add x + element to the queue, but only if they are valid moves
-//          check if any path just added reaches the end, if it does stop
 
 // Main method to implement algorithm: RETURNS ARRAY OF THE VISITED NODES IN THE ORDER WE VISITED THEM
 export function breadthFirstSearch(grid, startNode, finishNode) {
 
     //Create a list of the visited nodes in order, and a list of unvisited nodes so far.
-    const visitedNodesInOrder = [];
+    const visitedNodesInOrder = [startNode];
     const unvisitedNodes = getAllNodes(grid);
 
     //Add is going to be a single node (start: startNode) to add in relationship to the startNode, based on the UDLR
-    const nextBasisNode = startNode;
-    const n = 0;
+    let nextBasisNode = startNode;
+    let n = 0;
 
-    //While add is not the end node or there are no more unvisied nodes,
-    while (nextBasisNode !== finishNode) {
-        visitedNodesInOrder[n] = nextBasisNode;
-        const fourNodes = [];
-        if (nextBasisNode.row > 0) {
-            fourNodes.push(document.getElementById(`node-${nextBasisNode.row-1}-${node.col}`));
-        }
-        if (nextBasisNode.row < 19) {
-            fourNodes.push(document.getElementById(`node-${nextBasisNode.row+1}-${node.col}`));
-        }
-        if (nextBasisNode.col > 0) {
-            fourNodes.push(document.getElementById(`node-${nextBasisNode.row}-${node.col-1}`));
-        }
-        if (nextBasisNode.row < 49) {
-            fourNodes.push(document.getElementById(`node-${nextBasisNode.row}-${node.col+1}`));
-        }
+    //While [add is not the end node and] there are more unvisited nodes, [we check the end node in the loop and break then]
+    while (!!unvisitedNodes) {
+        //Visit a node
+        nextBasisNode = visitedNodesInOrder[n];
+        unvisitedNodes.pop(nextBasisNode);
+        let unvisitedNeighbors = updateUnvisitedNeighbors(nextBasisNode, grid);
 
-        //If there are no more possible generations, we must be trapped and should stop.
-        if (fourNodes.length === 0) {
+        //If there are no more possible neighbors, we must be trapped and should stop. Or if we hit the end.
+        if (unvisitedNeighbors.length === 0 || nextBasisNode === finishNode) {
             return visitedNodesInOrder;
         }
-
-        for each (j in fourNodes) {
-            if valid(grid, j) {
-                visitedNodesInOrder.push(j);
-            }
+        //Otherwise, we visit each neighbor and remove them from unvisited.
+        for (const i of unvisitedNeighbors) {
+            i.isVisited = true;
+            visitedNodesInOrder.push(i);
+            unvisitedNodes.pop(i);
         }
+        n++;
     }
     //       add is going to be the next element of the visitednodes, traversing the list linearly as it is being built
     //       you are going to generate 4 new nodes, the UDLR, and check their validity (w.r.t. walls, border, visited nodes)
     //       If valid,
     //              add the node to the visitedNodesInOrder and remove from unvisitedNodes.
+}
+function updateUnvisitedNeighbors(node, grid) {
+    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+    for (const neighbor of unvisitedNeighbors) {
+        neighbor.previousNode = node;
+    }
+    return unvisitedNeighbors;
+}
+function getUnvisitedNeighbors(node, grid) {
+    const neighbors = [];
+    const {col, row} = node;
+    if (row > 0) neighbors.push(grid[row - 1][col]);
+    if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
+    if (col > 0) neighbors.push(grid[row][col - 1]);
+    if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
+    return neighbors.filter(neighbor => !neighbor.isVisited && !neighbor.isWall);
 }
 function getAllNodes(grid) {
     const nodes = [];
@@ -61,4 +59,7 @@ function getAllNodes(grid) {
         }
     }
     return nodes;
+}
+export function getNodesInShortestPath(finishNode) {
+    return true;
 }

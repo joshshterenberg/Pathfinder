@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 import {dijkstra, getNodesInShortestPathOrder} from '../algorithms/dijkstra';
+import {breadthFirstSearch, getNodesInShortestPath} from '../algorithms/breadthFirstSearch';
 import './PathfindingVisualizer.css';
 
 //Definition of constants
@@ -85,13 +86,23 @@ export default class PathfindingVisualizer extends Component {
         const {grid} = this.state;
         const startNode = grid[START_ROW][START_COL];
         const finishNode = grid[FINISH_ROW][FINISH_COL];
+        const visitedNodesInOrder = breadthFirstSearch(grid, startNode, finishNode);
+        const nodesInShortestPathOrder = getNodesInShortestPath(finishNode);
+        this.animate(visitedNodesInOrder, nodesInShortestPathOrder);
+
     }
 
+    resetGrid() {
+        window.location.reload(false);
+    }
     //Renders the app and its elements (what's in the return statement)
     render() {
         const {grid, mouseIsPressed} = this.state;
         return (
             <>
+            <button onClick={() => this.resetGrid()}>
+                Reset
+            </button>
             <button onClick={() => this.visualizeDijkstra()}>
                 Visualize Dijkstra's Algorithm
             </button>
