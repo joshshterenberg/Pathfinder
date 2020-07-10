@@ -1,65 +1,40 @@
-// Performs Breadth First Search Algorithm
-
-// Main method to implement algorithm: RETURNS ARRAY OF THE VISITED NODES IN THE ORDER WE VISITED THEM
+//Main algorithm: returns every visited node in the order they were visited.
 export function breadthFirstSearch(grid, startNode, finishNode) {
-
-    //Create a list of the visited nodes in order, and a list of unvisited nodes so far.
     const visitedNodesInOrder = [startNode];
-    const unvisitedNodes = getAllNodes(grid);
-
-    //Add is going to be a single node (start: startNode) to add in relationship to the startNode, based on the UDLR
-    let nextBasisNode = startNode;
     let n = 0;
-
-    //While [add is not the end node and] there are more unvisited nodes, [we check the end node in the loop and break then]
-    while (!!unvisitedNodes) {
-        //Visit a node
-        nextBasisNode = visitedNodesInOrder[n];
-        unvisitedNodes.pop(nextBasisNode);
-        let unvisitedNeighbors = updateUnvisitedNeighbors(nextBasisNode, grid);
-
-        //If there are no more possible neighbors, we must be trapped and should stop. Or if we hit the end.
-        if (unvisitedNeighbors.length === 0 || nextBasisNode === finishNode) {
-            return visitedNodesInOrder;
-        }
-        //Otherwise, we visit each neighbor and remove them from unvisited.
-        for (const i of unvisitedNeighbors) {
-            i.isVisited = true;
-            visitedNodesInOrder.push(i);
-            unvisitedNodes.pop(i);
+    let closestNode = startNode;
+    while(n < visitedNodesInOrder.length) {
+        closestNode = visitedNodesInOrder[n];
+        //if the closestNode is the finishNode, we're done
+        if (closestNode === finishNode) return visitedNodesInOrder;
+        //otherwise, we must be trapped
+        //getValidNeighbors will find all valid neighbors to currentNode and connect them
+        closestNode.isVisited = true;
+        const validNeighbors = getValidNeighbors(grid, closestNode);
+        for (const i of validNeighbors) {
+            closestNode.previousNode = validNeighbors[i];
+            visitedNodesInOrder.push(validNeighbors[i]);
         }
         n++;
     }
-    //       add is going to be the next element of the visitednodes, traversing the list linearly as it is being built
-    //       you are going to generate 4 new nodes, the UDLR, and check their validity (w.r.t. walls, border, visited nodes)
-    //       If valid,
-    //              add the node to the visitedNodesInOrder and remove from unvisitedNodes.
+    return visitedNodesInOrder;
 }
-function updateUnvisitedNeighbors(node, grid) {
-    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
-    for (const neighbor of unvisitedNeighbors) {
-        neighbor.previousNode = node;
-    }
-    return unvisitedNeighbors;
-}
-function getUnvisitedNeighbors(node, grid) {
+function getValidNeighbors(grid, closestNode) {
     const neighbors = [];
-    const {col, row} = node;
+    const {col, row} = closestNode;
     if (row > 0) neighbors.push(grid[row - 1][col]);
     if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
     if (col > 0) neighbors.push(grid[row][col - 1]);
     if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
     return neighbors.filter(neighbor => !neighbor.isVisited && !neighbor.isWall);
 }
-function getAllNodes(grid) {
-    const nodes = [];
-    for (const row of grid) {
-        for (const node of row) {
-            nodes.push(node);
-        }
-    }
-    return nodes;
-}
+//Gets the path. Only works after breadthFirstSearch is called
 export function getNodesInShortestPath(finishNode) {
-    return true;
+    const nodesInShortestPathOrder = [];
+    let currentNode = finishNode;
+    while (currentNode !== null) {
+        nodesInShortestPathOrder.unshift(currentNode);
+        currentNode = currentNode.previousNode;
+    }
+    return nodesInShortestPathOrder;
 }
